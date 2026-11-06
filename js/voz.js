@@ -4,7 +4,6 @@
  *
  * - VozIU: escucha frases cortas y las convierte en acciones de la interfaz.
  * - DictadoIU: transcribe en tiempo real dentro de un área de texto.
- * - TemaIU: cambia entre tema claro y oscuro (uno de los comandos).
  *
  * El reconocimiento funciona en Chrome y Edge (webkitSpeechRecognition),
  * necesita HTTPS o localhost y conexión a internet.
@@ -33,33 +32,6 @@ window.jocarsa.iu = window.jocarsa.iu || {};
     // La frase reconocida se pinta con innerHTML en los toasts: se escapa antes
     static escapar(texto) {
       return String(texto).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-  }
-
-  class TemaIU {
-    static clave = "df-tema";
-
-    static cargar() {
-      let tema = "light";
-      try {
-        tema = localStorage.getItem(TemaIU.clave) || "light";
-      } catch (error) {
-        // Sin almacenamiento (modo privado): se queda en claro
-      }
-      TemaIU.aplicar(tema);
-    }
-
-    static aplicar(tema) {
-      document.documentElement.dataset.theme = tema;
-      try {
-        localStorage.setItem(TemaIU.clave, tema);
-      } catch (error) {
-        // La preferencia no se recuerda, pero el cambio se aplica igual
-      }
-    }
-
-    static alternar() {
-      TemaIU.aplicar(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
     }
   }
 
@@ -215,9 +187,6 @@ window.jocarsa.iu = window.jocarsa.iu || {};
         { ejemplo: "nuevo cliente", patron: /^(nuevo|crear)( cliente)?$/, accion: () => (app.drawer.abrirCrear(), "panel de creación") },
         { ejemplo: "cerrar sesión", patron: /^cerrar sesion$/, accion: () => ((location.href = "login.html"), "cerrando sesión") },
         { ejemplo: "cerrar", patron: /^(cerrar|cancelar)( panel| ventana)?$/, accion: () => (app.drawer.cerrar(), app.modal.cerrar(), "cerrado") },
-        { ejemplo: "modo oscuro", patron: /^(modo|tema) oscuro$/, accion: () => (TemaIU.aplicar("dark"), "tema oscuro") },
-        { ejemplo: "modo claro", patron: /^(modo|tema) claro$/, accion: () => (TemaIU.aplicar("light"), "tema claro") },
-        { ejemplo: "cambiar tema", patron: /^cambiar (de )?tema$/, accion: () => (TemaIU.alternar(), "tema cambiado") },
         { ejemplo: "contraer menú", patron: /^(contraer|minimizar|ocultar) (el )?menu$/, accion: () => this.alternarMenu(true) },
         { ejemplo: "expandir menú", patron: /^(expandir|mostrar|abrir) (el )?menu$/, accion: () => this.alternarMenu(false) },
         { ejemplo: "empezar dictado", patron: /^((empezar|iniciar|abrir) (el )?)?dictado$/, accion: () => this.irADictado() },
@@ -265,9 +234,10 @@ window.jocarsa.iu = window.jocarsa.iu || {};
       return "dictado";
     }
 
+    // La lista se pinta en el escenario, como el resto de vistas
     mostrarAyuda() {
       const lista = this.comandos.map((comando) => `<li>«${comando.ejemplo}»</li>`).join("");
-      this.aplicacion.modal.abrir("Comandos por voz", `<p>Pulsa el botón del micrófono y di, por ejemplo:</p><ul class="ju-voz-ayuda">${lista}</ul><p>En «ir a…» vale cualquier opción de los menús.</p>`);
+      DOM.uno("#escenario").innerHTML = `<article class="ju-card"><h2>Comandos por voz</h2><p>Pulsa el botón del micrófono y di, por ejemplo:</p><ul class="ju-voz-ayuda">${lista}</ul><p>En «ir a…» vale cualquier opción de los menús.</p></article>`;
       return "ayuda";
     }
 
@@ -439,11 +409,8 @@ window.jocarsa.iu = window.jocarsa.iu || {};
   }
 
   window.jocarsa.iu.Texto = Texto;
-  window.jocarsa.iu.TemaIU = TemaIU;
   window.jocarsa.iu.VozIU = VozIU;
   window.jocarsa.iu.DictadoIU = DictadoIU;
-
-  TemaIU.cargar();
 
   // componentes.js crea la aplicación en su propio DOMContentLoaded, que se registra antes
   document.addEventListener("DOMContentLoaded", () => {

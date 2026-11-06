@@ -9,8 +9,8 @@ Desarrollo de interfaces · 2º DAM · Dominique Farías
 ├── index.html                  ← interfaz integrada (UD1) + voz y dictado
 ├── js/
 │   ├── componentes.js          ← aplicación de la UD1 (añadida la vista «Dictado»)
-│   └── voz.js                  ← NUEVO: VozIU, DictadoIU y TemaIU
-├── css/estilo.css              ← estados del micrófono, dictado y tema oscuro
+│   └── voz.js                  ← NUEVO: VozIU y DictadoIU
+├── css/estilo.css              ← añadidos al final los estilos del micrófono y del dictado
 ├── data/entidades.json         ← nueva entrada «Dictado»
 ├── MEMORIA-UD2.md              ← este documento
 └── ejercicios_interfaces_naturales/
@@ -40,13 +40,11 @@ Hace falta internet: el reconocimiento de voz de Chrome se hace en los servidore
   | «clientes», «ir a toasts», «abrir formulario» | pulsa esa opción de los menús |
   | «buscar Laura» / «limpiar búsqueda» | escribe en el buscador y filtra la tabla |
   | «nuevo cliente» / «cerrar» | abre o cierra el panel lateral y la modal |
-  | «modo oscuro» / «modo claro» / «cambiar tema» | cambia el tema (se recuerda) |
   | «contraer menú» / «expandir menú» | minimiza la columna de navegación |
   | «empezar dictado» | abre la vista de dictado y empieza a escuchar |
-  | «ayuda» | ventana modal con todos los comandos |
+  | «ayuda» | muestra todos los comandos en la zona central |
   | «dejar de escuchar» / «cerrar sesión» | apaga la voz / vuelve al login |
 
-- **Capas flotantes**: el panel lateral y la modal quedaban tapados por el escenario (`z-index:1000`), así que se han subido por encima para que «nuevo cliente» y «ayuda» se vean.
 - **Dictado** (`DictadoIU`): vista nueva en la columna central. El texto provisional se ve en gris mientras se habla y el definitivo se añade al área de texto. Las palabras «punto», «coma», «dos puntos», «nueva línea» y «punto y aparte» se convierten en signos, y la frase empieza con mayúscula. «Terminar dictado» lo para. Además puede **leer el texto en voz alta** (`speechSynthesis`) y copiarlo.
 
 ## Ejercicios independientes
@@ -65,7 +63,7 @@ Hace falta internet: el reconocimiento de voz de Chrome se hace en los servidore
 He usado MediaPipe Tasks Vision, de Google: modelos ya entrenados de manos, gestos, rostro y pose que se ejecutan en el navegador con WebAssembly y GPU. También he usado el reconocimiento de voz de la Web Speech API, que funciona con un modelo en la nube. He revisado otras opciones: TensorFlow.js, face-api.js (rostro), Teachable Machine (entrenar un modelo propio sin código) y ml5.js. Elegí MediaPipe porque una sola librería cubre manos y rostro, y no hace falta entrenar nada.
 
 **b) Se ha creado una interfaz natural de usuario utilizando las herramientas disponibles.**
-La interfaz de la UD1 se puede usar entera con la voz: navegar, buscar, crear, cerrar, cambiar el tema y dictar. Los ejercicios se controlan con gestos, con la cara y apuntando en 3D, y en todos el usuario sabe en cada momento qué está pasando gracias a los indicadores de estado.
+La interfaz de la UD1 se puede usar entera con la voz: navegar, buscar, crear, cerrar y dictar. Los ejercicios se controlan con gestos, con la cara y apuntando en 3D, y en todos el usuario sabe en cada momento qué está pasando gracias a los indicadores de estado.
 
 **c) Se ha utilizado el reconocimiento de voz para implementar acciones en las interfaces naturales de usuario.**
 `js/voz.js`: `VozIU` convierte frases en acciones (tabla de comandos de arriba) y `DictadoIU` transcribe en tiempo real con puntuación por voz. Se gestionan los eventos `start`, `result` (provisional y final), `error` y `end`, con reinicio automático tras un silencio. Los errores (permiso denegado, sin micrófono, sin red) se avisan con un toast.
@@ -92,6 +90,7 @@ En `03-realidad-aumentada`, con A-Frame y WebXR, la misma escena funciona en tre
 
 - El reconocimiento de voz depende del navegador (Chrome o Edge) y de la conexión. En Firefox el botón aparece como «Voz no disponible».
 - La AR inmersiva WebXR solo funciona en móviles Android con ARCore y por HTTPS. En el portátil se usa el modo cámara.
+- «Nuevo cliente» abre el panel lateral, pero queda detrás de la zona central, igual que con el botón «+ Nuevo» de la UD1. Es un fallo de la interfaz base que no he cambiado.
 - Los umbrales de las expresiones (0,55 para la sonrisa, etc.) son aproximados y pueden variar con la luz o la persona.
 
 ## Uso de IA

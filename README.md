@@ -31,11 +31,3 @@ Abrir `http://localhost:8000/`.
 Esta versión mantiene la estructura visual y funcional de la versión 5, pero presenta HTML, templates, CSS, JSON y JavaScript en formato legible y no minificado.
 
 El JavaScript de control se ha reorganizado con programación orientada a objetos. El namespace conceptual solicitado es `jocarsa | iu`; como el carácter `|` es un operador de JavaScript y no puede formar parte de un identificador, el namespace técnico utilizado es:
-
-
-## UD2 · Interfaces naturales
-
-- `index.html` añade comandos por voz (botón del micrófono en la cabecera, di «ayuda») y una vista de **Dictado** en la columna central. El código está en `js/voz.js`.
-- `ejercicios_interfaces_naturales/`: gestos (Pointer Events y MediaPipe), detector facial (MediaPipe Face Landmarker) y realidad aumentada/virtual (A-Frame y WebXR).
-- Usar Chrome o Edge en `localhost`, con conexión a internet. La memoria y los criterios están en `MEMORIA-UD2.md`.
-- Con ayuda de IA (Claude) se han generado `js/voz.js`, los estilos de la UD2 y los ejercicios a partir de mi interfaz de la UD1.
